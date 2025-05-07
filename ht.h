@@ -3,6 +3,10 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <stdexcept>
+#include <functional>
+#include <algorithm>
+#include <utility>
 
 typedef size_t HASH_INDEX_T;
 
@@ -278,7 +282,6 @@ private:
     double resizeAlpha_;
     size_t elems_;
     size_t tombstones_;
-    mutable size_t totalPobes_;
 
 };
 
@@ -298,8 +301,18 @@ const HASH_INDEX_T HashTable<K,V,Prober,Hash,KEqual>::CAPACITIES[] =
 // To be completed
 template<typename K, typename V, typename Prober, typename Hash, typename KEqual>
 HashTable<K,V,Prober,Hash,KEqual>::HashTable(
-    double resizeAlpha, const Prober& prober, const Hasher& hash, const KEqual& kequal)
-       :  hash_(hash), kequal_(kequal), prober_(prober)
+    double resizeAlpha, 
+    const Prober& prober, 
+    const Hasher& hash, 
+    const KEqual& kequal)
+    :  hash_(hash)
+    , kequal_(kequal)
+    , prober_(prober)
+    , totalProbes_(0)
+    , mIndex_(0)
+    , resizeAlpha_(resizeAlpha)
+    , elems_(0)
+    , tombstones_(0)
 {
     // Initialize any other data members as necessary
     table_.assign(CAPACITIES[mIndex_], nullptr);
@@ -319,7 +332,7 @@ HashTable<K,V,Prober,Hash,KEqual>::~HashTable()
 template<typename K, typename V, typename Prober, typename Hash, typename KEqual>
 bool HashTable<K,V,Prober,Hash,KEqual>::empty() const
 {
-    return elems_ == 0;
+    return (elems_ == 0);
 }
 
 // To be completed
@@ -504,3 +517,4 @@ void HashTable<K, V, Prober, Hash, KEqual>::reportAll(std::ostream& out) const
 }
 
 #endif
+
