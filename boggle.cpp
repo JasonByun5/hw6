@@ -94,6 +94,37 @@ std::set<std::string> boggle(const std::set<std::string>& dict, const std::set<s
 bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>& prefix, const std::vector<std::vector<char> >& board, 
 								   std::string word, std::set<std::string>& result, unsigned int r, unsigned int c, int dr, int dc)
 {
-//add your solution here!
+  unsigned int N = board.size();
+  
+  if(r >= N || c >= N){
+    return false;
+  }
+
+  word.push_back(board[r][c]);
+  //check bounds
+
+
+  // see if it is a word or at least a prefix
+  bool isWord = dict.count(word) > 0;
+  bool isPrefix = prefix.count(word) > 0;
+  if(!isWord && !isPrefix){
+    return false;
+  }
+
+
+  //try to go deeper only if prefix of smth longer
+  bool foundLonger = false;
+  if(isPrefix){
+    unsigned int nr = r + dr;
+    unsigned int nc = c + dc;
+    foundLonger = boggleHelper(dict, prefix, board, word, result, nr, nc, dr, dc);
+  }
+
+  if(!foundLonger && isWord){
+    result.insert(word);
+    return true;
+  }
+
+  return foundLonger;
 
 }
