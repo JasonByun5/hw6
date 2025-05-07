@@ -346,7 +346,7 @@ size_t HashTable<K,V,Prober,Hash,KEqual>::size() const
 template<typename K, typename V, typename Prober, typename Hash, typename KEqual>
 void HashTable<K,V,Prober,Hash,KEqual>::insert(const ItemType& p)
 {
-    double lf = double(elems_ + tombstones_ + 1) / table_.size();
+    double lf = double(elems_ + tombstones_) / table_.size();
     if(lf >= resizeAlpha_){
         resize();
     }
